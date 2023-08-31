@@ -1,14 +1,12 @@
-import { useState } from 'react'
-import './App.css'
+import MyForm from './components/form/form.jsx';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <p>hello</p>
-    </>
-  )
+    <div className="app">
+      <MyForm />
+    </div>
+  );
 }
 
-export default App
+export default App;
