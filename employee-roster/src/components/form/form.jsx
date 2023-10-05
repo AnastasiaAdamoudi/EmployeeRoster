@@ -2,12 +2,31 @@ import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 
 function MyForm() {
-  const [numEmployees, setNumEmployees] = useState(1);
-  const [employeeData, setEmployeeData] = useState(Array(numEmployees).fill({ name: '', shifts: 0, days: {} }));
+  const [mainShiftHours, setMainShiftHours] = useState([]);
+  const [bankAftHours, setBankAftHours] = useState([]);
+  const [bankEveHours, setBankEveHours] = useState([]);
+  const [shiftData, setShiftData] = useState(Array(7).fill({ employeesMain: 0, employeesBankaAft: 0, employeesBankEve: 0, }));
+  const [employeesNumber, setEmployeesNumber] = useState(1);
+  const [employeeData, setEmployeeData] = useState(Array(employeesNumber).fill({ name: '', totalHours: 0, days: {} }));
 
-  const handleNumEmployeesChange = (event) => {
+  const handleMainShiftHoursChange = (event) => {
+    const value = parseInt(event.target.value, 13);
+    setMainShiftHours(value);
+  };
+
+  const handleBankAftHoursChange = (event) => {
+    const value = parseInt(event.target.value, 6);
+    setBankAftHours(value);
+  };
+
+  const handleBankEveHoursChange = (event) => {
+    const value = parseInt(event.target.value, 6);
+    setBankEveHours(value);
+  };
+
+  const handleEmployeesNumberChange = (event) => {
     const value = parseInt(event.target.value, 10);
-    setNumEmployees(value);
+    setEmployeesNumber(value);
   };
 
   const handleEmployeeDataChange = (index, field, value) => {
@@ -26,27 +45,77 @@ function MyForm() {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <Form.Group controlId="formBasicTotalHours">
-        <Form.Label>Hours per week for each employee</Form.Label>
-        <Form.Control type="text" placeholder="Enter the total hours" />
-      </Form.Group>
 
-      <Form.Group controlId="formBasicShiftHours">
-        <Form.Label>Number of hours for each shift</Form.Label>
-        <Form.Control type="password" placeholder="Enter the shift hours" />
-      </Form.Group>
+    {/* SHIFTS */}
 
-      <Form.Group controlId="formBasicEmployeeNumber">
-        <Form.Label>Number of employees</Form.Label>
+      <Form.Group controlId="formBasicMainShiftHours">
+        <Form.Label>Hours for daily main shift</Form.Label>
         <Form.Control
           type="number"
-          placeholder="Enter number of employees"
-          value={numEmployees}
-          onChange={handleNumEmployeesChange}
+          placeholder="Enter the number of hours for the daily main shift"
+          value={mainShiftHours}
+          onChange={handleMainShiftHoursChange}
+          />
+      </Form.Group>
+
+      <Form.Group controlId="formBasicBankAftHours">
+        <Form.Label>Hours for afternoon bank shift</Form.Label>
+        <Form.Control
+          type="number"
+          placeholder="Enter the number of hours for the daily afternoon bank shift"
+          value={bankAftHours}
+          onChange={handleBankAftHoursChange}
+          />
+      </Form.Group>
+
+      <Form.Group controlId="formBasicBankEveHours">
+        <Form.Label>Hours for evening bank shift</Form.Label>
+        <Form.Control
+          type="number"
+          placeholder="Enter the number of hours for the daily evening bank shift"
+          value={bankEveHours}
+          onChange={handleBankEveHoursChange}
+          />
+      </Form.Group>
+
+      <Form.Group controlId="formBasicMainEmployees">
+        <Form.Label>Number of employees for each main shift</Form.Label>
+        <Form.Control
+          type="number"
+          placeholder="Enter the shift hours"
+          value=""
+          />
+      </Form.Group>
+
+     {Array.from({ length: 7 }).map((_, index) => (
+        <div key={index}>
+          <Form.Group controlId={`formBasicDay${index+1}MainHours`}>
+            <Form.Label>Number of employees for Day {index + 1}</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder={`Enter the number of employees needed for the main shift of Day ${index + 1}`}
+              onChange={(event) =>
+                handleShiftDataChange(index, 'EmployeesMain', parseInt(event.target.value, 10))
+              }
+            />
+          </Form.Group>
+        </div>
+))}
+
+
+{/* EMPLOYEES */}
+
+      <Form.Group controlId="formBasicEmployeesNumber">
+        <Form.Label>Number of weekly employees</Form.Label>
+        <Form.Control
+          type="number"
+          placeholder="Enter the number of this week's working employees"
+          value={employeesNumber}
+          onChange={handleEmployeesNumberChange}
         />
       </Form.Group>
 
-{Array.from({ length: numEmployees }).map((_, index) => (
+{Array.from({ length: employeesNumber }).map((_, index) => (
   <div key={index}>
     <Form.Group controlId={`formBasicEmployeeName${index}`}>
       <Form.Label>Employee {index + 1} Name</Form.Label>
@@ -59,13 +128,13 @@ function MyForm() {
       />
     </Form.Group>
     
-    <Form.Group controlId={`formBasicEmployeeShifts${index}`}>
-      <Form.Label>Number of shifts per week for Employee {index + 1}</Form.Label>
+    <Form.Group controlId={`formBasicEmployeeHours${index}`}>
+      <Form.Label>Number of working hours per week for Employee {index + 1}</Form.Label>
       <Form.Control
         type="number"
-        placeholder={`Enter number of shifts for Employee ${index + 1}`}
+        placeholder={`Enter the number of hours Employee ${index + 1} is working this week`}
         onChange={(event) =>
-          handleEmployeeDataChange(index, 'shifts', parseInt(event.target.value, 10))
+          handleEmployeeDataChange(index, 'totalHours', parseInt(event.target.value, 10))
         }
       />
     </Form.Group>
