@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import ShiftDetails from "../shift-details/shift-details";
 import EmployeeDetails from "../employee-details/employee-details";
@@ -36,6 +36,9 @@ function MyForm() {
     const value = event.target.checked;
     setBankShiftsExistence(value);
   };
+
+  const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
 
   const handleShiftDataChange = (index, field, value) => {
     const updatedShiftData = [...shiftData];
@@ -89,12 +92,10 @@ function MyForm() {
         {Array.from({ length: 7 }).map((_, index) => (
           <div key={index}>
             <Form.Group controlId={`formBasicMainShifts${index}`}>
-              <Form.Label>Number of main shifts for day {index + 1}</Form.Label>
+            <Form.Label>Number of main shifts for {dayNames[index]}</Form.Label>
               <Form.Control
                 type="number"
-                placeholder={`Enter the number of main shifts for day ${
-                  index + 1
-                }`}
+                placeholder={`Enter the number of main shifts for day ${dayNames[index]}`}
                 onChange={(event) =>
                   handleShiftDataChange(
                     index,
@@ -145,13 +146,11 @@ function MyForm() {
               <div key={dayIndex}>
                 <Form.Group controlId={`formBasicBankShifts${dayIndex}`}>
                   <Form.Label>
-                    Number of bank shifts for day {dayIndex + 1}
+                    Number of bank shifts for day {dayNames[dayIndex]}
                   </Form.Label>
                   <Form.Control
                     type="number"
-                    placeholder={`Enter the number of bank shifts for day ${
-                      dayIndex + 1
-                    }`}
+                    placeholder={`Enter the number of bank shifts for day ${dayNames[dayIndex]}`}
                     onChange={(event) =>
                       handleShiftDataChange(
                         dayIndex,
@@ -204,6 +203,7 @@ function MyForm() {
                     name={employeeData[index].name}
                     totalHours={employeeData[index].totalHours}
                     days={employeeData[index].days}
+                    dayNames={dayNames}
                     onEmployeeNameChange={handleEmployeeNameChange}
                     onEmployeeTotalHoursChange={handleEmployeeTotalHoursChange}
                     onEmployeeDaysChange={handleEmployeeDaysChange}

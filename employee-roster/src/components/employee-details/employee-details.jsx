@@ -1,4 +1,3 @@
-import React from "react";
 import { Form } from "react-bootstrap";
 import PropTypes from "prop-types";
 
@@ -7,6 +6,7 @@ function EmployeeDetails({
   name,
   totalHours,
   days,
+  dayNames,
   onEmployeeNameChange,
   onEmployeeTotalHoursChange,
   onEmployeeDaysChange,
@@ -15,6 +15,7 @@ function EmployeeDetails({
     index: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     totalHours: PropTypes.number.isRequired,
+    dayNames: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
     days: PropTypes.shape({
       monday: PropTypes.bool.isRequired,
       tuesday: PropTypes.bool.isRequired,
@@ -74,83 +75,20 @@ function EmployeeDetails({
       </Form.Group>
       <Form.Group controlId={`formBasicEmployeeDays${index}`}>
         <Form.Label>Days of the week for Employee {index + 1}</Form.Label>
-        <Form.Check
-          type="checkbox"
-          label="Monday"
-          checked={days.monday}
-          onChange={(event) =>
-            handleChange("days", {
-              ...days,
-              monday: event.target.checked,
-            })
-          }
-        />
-        <Form.Check
-          type="checkbox"
-          label="Tuesday"
-          checked={days.tuesday}
-          onChange={(event) =>
-            handleChange("days", {
-              ...days,
-              tuesday: event.target.checked,
-            })
-          }
-        />
-        <Form.Check
-          type="checkbox"
-          label="Wednesday"
-          checked={days.wednesday}
-          onChange={(event) =>
-            handleChange("days", {
-              ...days,
-              wednesday: event.target.checked,
-            })
-          }
-        />
-        <Form.Check
-          type="checkbox"
-          label="Thursday"
-          checked={days.thursday}
-          onChange={(event) =>
-            handleChange("days", {
-              ...days,
-              thursday: event.target.checked,
-            })
-          }
-        />
-        <Form.Check
-          type="checkbox"
-          label="Friday"
-          checked={days.friday}
-          onChange={(event) =>
-            handleChange("days", {
-              ...days,
-              friday: event.target.checked,
-            })
-          }
-        />
-        <Form.Check
-          type="checkbox"
-          label="Saturday"
-          checked={days.saturday}
-          onChange={(event) =>
-            handleChange("days", {
-              ...days,
-              saturday: event.target.checked,
-            })
-          }
-        />
-        <Form.Check
-          type="checkbox"
-          label="Sunday"
-          checked={days.sunday}
-          onChange={(event) =>
-            handleChange("days", {
-              ...days,
-              sunday: event.target.checked,
-            })
-          }
-        />
+        {dayNames.map((dayName, dayIndex) => (
+          <Form.Check
+            key={dayIndex}
+            type="checkbox"
+            label={dayName}
+            checked={days[dayName.toLowerCase()]}
+            onChange={(event) =>
+              handleChange("days", {
+                ...days,
+                [dayName.toLowerCase()]: event.target.checked,
+              })
+            }
+          />
+        ))}
       </Form.Group>
     </div>
   );
