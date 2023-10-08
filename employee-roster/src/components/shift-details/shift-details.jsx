@@ -9,15 +9,13 @@ function ShiftDetails({
   onShiftDataChange,
   mainShift = false,
 }) {
-
-    ShiftDetails.propTypes = {
-        label: PropTypes.string.isRequired,
-        shiftIndex: PropTypes.number.isRequired,
-        shiftData: PropTypes.array.isRequired,
-        onShiftDataChange: PropTypes.func.isRequired,
-        mainShift: PropTypes.bool,
-      };
-      
+  ShiftDetails.propTypes = {
+    label: PropTypes.string.isRequired,
+    shiftIndex: PropTypes.number.isRequired,
+    shiftData: PropTypes.array.isRequired,
+    onShiftDataChange: PropTypes.func.isRequired,
+    mainShift: PropTypes.bool,
+  };
 
   const shiftPrefix = mainShift ? "mainShift" : "bankShift";
 
@@ -46,9 +44,7 @@ function ShiftDetails({
       </Form.Group>
 
       <Form.Group controlId={`${shiftPrefix}Employees${shiftIndex}`}>
-        <Form.Label>
-          Number of employees needed for {label}
-        </Form.Label>
+        <Form.Label>Number of employees needed for {label}</Form.Label>
         <Form.Control
           type="number"
           placeholder={`Enter the number of employees needed for ${label}`}

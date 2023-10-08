@@ -7,7 +7,9 @@ function EmployeeDetails({
   name,
   totalHours,
   days,
-  onEmployeeDataChange,
+  onEmployeeNameChange,
+  onEmployeeTotalHoursChange,
+  onEmployeeDaysChange,
 }) {
   EmployeeDetails.propTypes = {
     index: PropTypes.number.isRequired,
@@ -22,11 +24,25 @@ function EmployeeDetails({
       saturday: PropTypes.bool.isRequired,
       sunday: PropTypes.bool.isRequired,
     }).isRequired,
-    onEmployeeDataChange: PropTypes.func.isRequired,
+    onEmployeeNameChange: PropTypes.func.isRequired,
+    onEmployeeTotalHoursChange: PropTypes.func.isRequired,
+    onEmployeeDaysChange: PropTypes.func.isRequired,
   };
 
   const handleChange = (field, value) => {
-    onEmployeeDataChange(index, field, value);
+    switch (field) {
+      case "name":
+        onEmployeeNameChange(index, value);
+        break;
+      case "totalHours":
+        onEmployeeTotalHoursChange(index, value);
+        break;
+      case "days":
+        onEmployeeDaysChange(index, value);
+        break;
+      default:
+        break;
+    }
   };
 
   return (
