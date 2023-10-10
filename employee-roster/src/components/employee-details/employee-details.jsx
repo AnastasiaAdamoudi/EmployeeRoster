@@ -67,9 +67,7 @@ function EmployeeDetails({
             index + 1
           } is working this week`}
           value={totalHours}
-          onChange={(event) =>
-            handleChange("totalHours", parseInt(event.target.value, 10))
-          }
+          onChange={(event) => handleChange("totalHours", parseInt(event.target.value, 10))}
           max={70}
         />
       </Form.Group>
@@ -81,12 +79,7 @@ function EmployeeDetails({
             type="checkbox"
             label={dayName}
             checked={days[dayName.toLowerCase()]}
-            onChange={(event) =>
-              handleChange("days", {
-                ...days,
-                [dayName.toLowerCase()]: event.target.checked,
-              })
-            }
+            onChange={(event) => handleChange("days", {...days, [dayName.toLowerCase()]: event.target.checked,})}
           />
         ))}
       </Form.Group>

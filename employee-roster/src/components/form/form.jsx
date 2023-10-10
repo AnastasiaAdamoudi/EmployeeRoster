@@ -4,7 +4,6 @@ import ShiftDetails from "../shift-details/shift-details";
 import EmployeeDetails from "../employee-details/employee-details";
 
 function MyForm() {
-
   const [bankShiftsExistence, setBankShiftsExistence] = useState(false);
   const [shiftData, setShiftData] = useState(
     Array.from({ length: 7 }, () => ({
@@ -89,13 +88,27 @@ function MyForm() {
     setEmployeeData(updatedEmployeeData);
   };
 
+  console.log("shiftData", shiftData);
+  console.log("employeeData", employeeData);
+  console.log("bankShiftsExistence", bankShiftsExistence);
+  console.log("employeesNumber", employeesNumber);
+
   // Function to handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
     const updatedShiftData = calculateShiftDurations(shiftData); // Step 1: Calculate the duration of each main shift and bank shift
-    const employeeAssignments = distributeEmployeesToMainShifts(updatedShiftData, employeeData); // Step 2: Distribute employees to main shifts
-    const updatedEmployeeData = offerBankShiftsIfNeeded(employeeAssignments, employeeData); // Step 3: Offer additional bank shifts to employees if needed
-    const shiftAvailability = checkShiftAvailability(updatedShiftData, updatedEmployeeData); // Step 4: Check if there are enough employees for each shift
+    const employeeAssignments = distributeEmployeesToMainShifts(
+      updatedShiftData,
+      employeeData
+    ); // Step 2: Distribute employees to main shifts
+    const updatedEmployeeData = offerBankShiftsIfNeeded(
+      employeeAssignments,
+      employeeData
+    ); // Step 3: Offer additional bank shifts to employees if needed
+    const shiftAvailability = checkShiftAvailability(
+      updatedShiftData,
+      updatedEmployeeData
+    ); // Step 4: Check if there are enough employees for each shift
     if (shiftAvailability.some((availability) => !availability)) {
       alert("There are not enough employees for some shifts!"); // Step 5: Display an alert if there are any issues
     } else {
@@ -103,7 +116,7 @@ function MyForm() {
       console.log("Employee data:", updatedEmployeeData);
     }
   };
-  
+
   // Function to calculate the duration of each shift
   const calculateShiftDurations = (shiftData) => {
     const updatedShiftData = [...shiftData];
@@ -116,54 +129,98 @@ function MyForm() {
         s.duration = duration;
       });
     }
+    console.log("updatedShiftData", updatedShiftData);
     return updatedShiftData;
   };
-  
+
   // Function to distribute employees to main shifts
   const distributeEmployeesToMainShifts = (shiftData, employeeData) => {
     const employeeAssignments = [];
     for (let i = 0; i < shiftData.length; i++) {
       const shift = shiftData[i];
       const mainShifts = shift.shifts;
-      const employees = employeeData.filter((e) => e.days[dayNames[i].toLowerCase()]);
+      const employees = employeeData.filter(
+        (e) => e.days[dayNames[i].toLowerCase()]
+      );
       const employeeAssignmentsForDay = [];
       for (let j = 0; j < mainShifts.length; j++) {
         const shift = mainShifts[j];
-        const employeesForShift = employees.filter((e) => e.totalHours >= shift.duration);
+        const employeesForShift = employees.filter(
+          (e) => e.totalHours >= shift.duration
+        );
         employeeAssignmentsForDay.push(employeesForShift);
       }
       employeeAssignments.push(employeeAssignmentsForDay);
     }
     return employeeAssignments;
   };
-  
+
   // Function to offer additional bank shifts to employees if needed
   const offerBankShiftsIfNeeded = (employeeAssignments, employeeData) => {
     const updatedEmployeeData = [...employeeData];
     for (let i = 0; i < employeeAssignments.length; i++) {
       const assignmentsForDay = employeeAssignments[i];
-      const employeesForDay = updatedEmployeeData.filter((e) => e.days[dayNames[i].toLowerCase()]);
+      const employeesForDay = updatedEmployeeData.filter(
+        (e) => e.days[dayNames[i].toLowerCase()]
+      );
       for (let j = 0; j < assignmentsForDay.length; j++) {
         const assignmentsForShift = assignmentsForDay[j];
-        const employeesForShift = employeesForDay.filter((e) => assignmentsForShift.includes(e));
-        const totalHoursForShift = assignmentsForShift.reduce((total, e) => total + e.totalHours, 0);
-        const totalHoursForEmployees = employeesForShift.reduce((total, e) => total + e.totalHours, 0);
+        const employeesForShift = employeesForDay.filter((e) =>
+          assignmentsForShift.includes(e)
+        );
+        const totalHoursForShift = assignmentsForShift.reduce(
+          (total, e) => total + e.totalHours,
+          0
+        );
+        const totalHoursForEmployees = employeesForShift.reduce(
+          (total, e) => total + e.totalHours,
+          0
+        );
         if (totalHoursForShift > totalHoursForEmployees) {
           const bankShifts = totalHoursForShift - totalHoursForEmployees;
-          const bankShiftsPerEmployee = Math.ceil(bankShifts / employeesForShift.length);
+          const bankShiftsPerEmployee = Math.ceil(
+            bankShifts / employeesForShift.length
+          );
           employeesForShift.forEach((e) => {
             e.totalHours += bankShiftsPerEmployee;
           });
         }
       }
     }
+    console.log("employeeAssignments", employeeAssignments);
     return employeeAssignments;
   };
-  
-  // Function to check if there are enough employees for each main shift and bank shift
-  const checkShiftAvailability = (shiftData, employeeDatal, employeeAssignments) => {
 
-      
+  // Function to check if there are enough employees for each main shift and bank shift
+  const checkShiftAvailability = (
+    shiftData,
+    employeeData,
+    employeeAssignments
+  ) => {
+    const shiftAvailability = [];
+
+    for (let i = 0; i < shiftData.length; i++) {
+      const mainShifts = shiftData[i].mainShifts;
+      const bankShifts = shiftData[i].bankShifts;
+      const totalMainShiftEmployees = employeeAssignments[i].reduce(
+        (total, assignmentsForShift) => total + assignmentsForShift.length,
+        0
+      );
+      const totalBankShiftEmployees = bankShifts
+        ? employeeAssignments[i + 7].reduce(
+            (total, assignmentsForShift) => total + assignmentsForShift.length,
+            0
+          )
+        : 0;
+      const mainShiftsAvailability = totalMainShiftEmployees >= mainShifts;
+      const bankShiftsAvailability =
+        !bankShifts || totalBankShiftEmployees >= bankShifts;
+      const dayAvailability = mainShiftsAvailability && bankShiftsAvailability;
+      shiftAvailability.push(dayAvailability);
+    }
+    console.log("shiftAvailability", shiftAvailability);
+    return shiftAvailability;
+  };
 
   return (
     <div>
@@ -248,7 +305,7 @@ function MyForm() {
                       label={`Bank Shift ${shiftIndex + 1}`}
                       shiftIndex={shiftIndex}
                       shiftData={shiftData}
-                      onChange={(updatedShiftData) =>
+                      onShiftDataChange={(updatedShiftData) =>
                         handleShiftDataChange(
                           dayIndex,
                           "shifts",
@@ -279,8 +336,10 @@ function MyForm() {
               <div key={index}>
                 {employeeData[index] && (
                   <EmployeeDetails
-                    key={index}
-                    {...employeeData[index]}
+                    index={index}
+                    name={employeeData[index].name}
+                    totalHours={employeeData[index].totalHours}
+                    days={employeeData[index].days}
                     dayNames={dayNames}
                     onEmployeeNameChange={(value) =>
                       handleEmployeeNameChange(index, value)

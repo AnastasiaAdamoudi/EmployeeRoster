@@ -47,9 +47,7 @@ function ShiftDetails({
         <Form.Control
           type="number"
           placeholder={`Enter the number of employees needed for ${label}`}
-          onChange={(event) =>
-            handleChange("Employees", parseInt(event.target.value, 10))
-          }
+          onChange={(event) => handleChange("Employees", parseInt(event.target.value, 10))}
         />
       </Form.Group>
     </div>
